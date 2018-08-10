@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import RegisterForm from './RegisterForm';
+import RegisterLoginForm from './RegisterLoginForm';
 import './App.css';
 
 export default class App extends Component {
@@ -7,36 +7,37 @@ export default class App extends Component {
   state = {
     authenticated: false,
     mode: 'register',
-    username: '',
-    password: '',
-    errorMessage: ''
+    username: ''
   }
 
   render() {
 
-    const { username, password, errorMessage } = this.state;
+    const { authenticated, mode, username } = this.state;
 
     return (
       <React.Fragment>
         {
-          this.state.authenticated ?
+          authenticated ?
           `Hello, ${username}!` // 'Hello, ' + username + '!'
           :
-          <RegisterForm
-            username={username}
-            password={password}
-            errorMessage={errorMessage}
-            onRegister={this.register}
-            />
+          <React.Fragment>
+            <RegisterLoginForm mode={mode} onAuthenticate={this.authenticate}/>
+            {
+              mode === 'register' ?
+              <div style={{ cursor: 'pointer' }} onClick={() => { this.setState({ mode: 'login' }) }}>Go login</div>
+              :
+              <div style={{ cursor: 'pointer' }} onClick={() => { this.setState({ mode: 'register' }) }}>Go register</div>
+            }
+          </React.Fragment>
         }
        </React.Fragment>
     );
   }
 
-  register = (authenticated, username) => {
+  authenticate = (username) => {
 
     this.setState({
-      authenticated,
+      authenticated: true,
       username
     });
   }
