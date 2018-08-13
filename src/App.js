@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import RegisterLoginForm from './RegisterLoginForm';
+import List from './List';
 import './App.css';
 
 export default class App extends Component {
 
   state = {
-    authenticated: false,
+    authenticated: true,
     mode: 'register',
     username: ''
   }
@@ -14,11 +15,25 @@ export default class App extends Component {
 
     const { authenticated, mode, username } = this.state;
 
+    const list = [{
+      id: 0,
+      text: '123'
+    }, {
+      id: 1,
+      text: '456'
+    }, {
+      id: 2,
+      text: '789'
+    }];
+
     return (
       <React.Fragment>
         {
           authenticated ?
-          `Hello, ${username}!` // 'Hello, ' + username + '!'
+          <React.Fragment>
+            `Hello, ${username}!`
+            <List list={list}/>
+          </React.Fragment>
           :
           <React.Fragment>
             <RegisterLoginForm mode={mode} onAuthenticate={this.authenticate}/>
