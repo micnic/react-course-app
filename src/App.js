@@ -13,6 +13,9 @@ export default class App extends Component {
       red: 0,
       green: 0,
       blue: 0,
+      hue: 0,
+      saturation: 0,
+      lightness: 0,
       rgb: '#000000'
     };
   }
@@ -50,7 +53,10 @@ export default class App extends Component {
 
   render() {
 
-    const { red, green, blue, rgb } = this.state;
+    const {
+      red, green, blue, rgb,
+      hue, saturation, lightness
+    } = this.state;
 
     const style = {
       border: '1px solid black',
@@ -70,6 +76,16 @@ export default class App extends Component {
         <input type="range" min="0" max="255" value={blue} onChange={this.handleChangeBlue}/>
         <br/>RGB:<br/>
         <input type="text" value={rgb} onChange={this.handleChangeRGB} onBlur={this.handleBlurRGB}/>
+        <br/>
+        <hr/>
+        <br/>Hue:<br/>
+        <input type="range" min="0" max="360" value={hue} onChange={this.handleChangeHue}/>
+        <br/>Saturation:<br/>
+        <input type="range" min="0" max="100" value={saturation} onChange={this.handleChangeSaturation}/>
+        <br/>Lightness:<br/>
+        <input type="range" min="0" max="100" value={lightness} onChange={this.handleChangeLightness}/>
+        <br/>
+        <div>HSL({Math.round(hue)}, {saturation.toFixed(2)}%, {lightness.toFixed(2)}%)</div>
         <br/>
         <div style={style}></div>
       </React.Fragment>
@@ -101,8 +117,13 @@ export default class App extends Component {
     const red = Number(event.target.value);
     const { green, blue } = this.state;
 
+    const [ hue, saturation, lightness ] = App.toHSL(red, green, blue);
+
     this.setState({
       red,
+      hue,
+      saturation,
+      lightness,
       rgb: App.getRGB(red, green, blue)
     });
   }
@@ -112,8 +133,13 @@ export default class App extends Component {
     const green = Number(event.target.value);
     const { red, blue } = this.state;
 
+    const [ hue, saturation, lightness ] = App.toHSL(red, green, blue);
+
     this.setState({
       green,
+      hue,
+      saturation,
+      lightness,
       rgb: App.getRGB(red, green, blue)
     });
   }
@@ -123,7 +149,60 @@ export default class App extends Component {
     const blue = Number(event.target.value);
     const { red, green } = this.state;
 
+    const [ hue, saturation, lightness ] = App.toHSL(red, green, blue);
+
     this.setState({
+      blue,
+      hue,
+      saturation,
+      lightness,
+      rgb: App.getRGB(red, green, blue)
+    });
+  }
+
+  handleChangeHue = (event) => {
+
+    const hue = Number(event.target.value);
+    const { saturation, lightness } = this.state;
+
+    const [ red, green, blue ] = App.toRGB(hue / 360, saturation / 100, lightness / 100);
+
+    this.setState({
+      hue,
+      red,
+      green,
+      blue,
+      rgb: App.getRGB(red, green, blue)
+    });
+  }
+
+  handleChangeSaturation = (event) => {
+
+    const saturation = Number(event.target.value);
+    const { hue, lightness } = this.state;
+
+    const [ red, green, blue ] = App.toRGB(hue / 360, saturation / 100, lightness / 100);
+
+    this.setState({
+      saturation,
+      red,
+      green,
+      blue,
+      rgb: App.getRGB(red, green, blue)
+    });
+  }
+
+  handleChangeLightness = (event) => {
+
+    const lightness = Number(event.target.value);
+    const { hue, saturation } = this.state;
+
+    const [ red, green, blue ] = App.toRGB(hue / 360, saturation / 100, lightness / 100);
+
+    this.setState({
+      lightness,
+      red,
+      green,
       blue,
       rgb: App.getRGB(red, green, blue)
     });
@@ -178,5 +257,63 @@ export default class App extends Component {
   static getRGB(red, green, blue) {
 
     return `#${App.toHex(red)}${App.toHex(green)}${App.toHex(blue)}`;
+  }
+
+  static toHSL(red, green, blue) {
+
+    red /= 255, green /= 255, blue /= 255;
+
+    const max = Math.max(red, green, blue)
+    const min = Math.min(red, green, blue);
+
+    let hue = 0;
+    let saturation = 0;
+    let lightness = (max + min) / 2;
+
+    if (max !== min) {
+      const d = max - min;
+      saturation = lightness > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+      switch (max) {
+        case red: hue = (green - blue) / d + (green < blue ? 6 : 0); break;
+        case green: hue = (blue - red) / d + 2; break;
+        case blue: hue = (red - green) / d + 4; break;
+      }
+
+      hue /= 6;
+    }
+
+    return [ hue * 360, saturation * 100, lightness * 100 ];
+  }
+
+  static toRGB(hue, saturation, lightness) {
+
+    let red = lightness;
+    let green = lightness;
+    let blue = lightness;
+
+    if (saturation !== 0) {
+      const hue2rgb = (p, q, t) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1/6) return p + (q - p) * 6 * t;
+        if (t < 1/2) return q;
+        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
+      }
+
+      var q = lightness < 0.5 ? lightness * (1 + saturation) : lightness + saturation - lightness * saturation;
+      var p = 2 * lightness - q;
+
+      red = hue2rgb(p, q, hue + 1/3);
+      green = hue2rgb(p, q, hue);
+      blue = hue2rgb(p, q, hue - 1/3);
+    }
+
+    return [
+      Math.round(red * 255),
+      Math.round(green * 255),
+      Math.round(blue * 255)
+    ];
   }
 }
