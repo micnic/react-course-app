@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import RGBPicker from './RGBPicker';
+import HSLPicker from './HSLPicker';
 
 export default class App extends Component {
 
@@ -67,25 +69,28 @@ export default class App extends Component {
 
     return (
       <React.Fragment>
-        <canvas ref={this.canvasRef} style={{ border: '1px solid black' }} onMouseMove={this.handleClickPalette} width="256" height="256"></canvas>
-        <br/>Red:<br/>
-        <input type="range" min="0" max="255" value={red} onChange={this.handleChangeRed}/>
-        <br/>Green:<br/>
-        <input type="range" min="0" max="255" value={green} onChange={this.handleChangeGreen}/>
-        <br/>Blue:<br/>
-        <input type="range" min="0" max="255" value={blue} onChange={this.handleChangeBlue}/>
-        <br/>RGB:<br/>
-        <input type="text" value={rgb} onChange={this.handleChangeRGB} onBlur={this.handleBlurRGB}/>
+        <canvas ref={this.canvasRef} style={{ border: '1px solid black' }} onClick={this.handleClickPalette} width="256" height="256"></canvas>
         <br/>
+        <RGBPicker
+          red={red}
+          green={green}
+          blue={blue}
+          rgb={rgb}
+          handleChangeRed={this.handleChangeRed}
+          handleChangeGreen={this.handleChangeGreen}
+          handleChangeBlue={this.handleChangeBlue}
+          handleChangeRGB={this.handleChangeRGB}
+          handleBlurRGB={this.handleBlurRGB}
+        />
         <hr/>
-        <br/>Hue:<br/>
-        <input type="range" min="0" max="360" value={hue} onChange={this.handleChangeHue}/>
-        <br/>Saturation:<br/>
-        <input type="range" min="0" max="100" value={saturation} onChange={this.handleChangeSaturation}/>
-        <br/>Lightness:<br/>
-        <input type="range" min="0" max="100" value={lightness} onChange={this.handleChangeLightness}/>
-        <br/>
-        <div>HSL({Math.round(hue)}, {saturation.toFixed(2)}%, {lightness.toFixed(2)}%)</div>
+        <HSLPicker
+          hue={hue}
+          saturation={saturation}
+          lightness={lightness}
+          handleChangeHue={this.handleChangeHue}
+          handleChangeSaturation={this.handleChangeSaturation}
+          handleChangeLightness={this.handleChangeLightness}
+        />
         <br/>
         <div style={style}></div>
       </React.Fragment>
@@ -103,11 +108,15 @@ export default class App extends Component {
     const imageData = context.getImageData(x, y, 1, 1);
 
     const [ red, green, blue ] = imageData.data;
+    const [ hue, saturation, lightness ] = App.toHSL(red, green, blue);
 
     this.setState({
       red,
       green,
       blue,
+      hue,
+      saturation,
+      lightness,
       rgb: App.getRGB(red, green, blue)
     });
   }
@@ -232,10 +241,15 @@ export default class App extends Component {
       value = this.state.rgb;
     }
 
+    const [ hue, saturation, lightness ] = App.toHSL(red, green, blue);
+
     this.setState({
       red,
       green,
       blue,
+      hue,
+      saturation,
+      lightness,
       rgb: value
     });
   }
