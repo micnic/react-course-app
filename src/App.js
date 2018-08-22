@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import RGBPicker from './components/RGBPicker';
 import HSLPicker from './components/HSLPicker';
-import { redContext, greenContext, blueContext } from './contextes';
 import RGBProvider from './components/RGBProvider';
+import HSLProvider from './components/HSLProvider';
 
 export default class App extends Component {
 
@@ -94,14 +94,22 @@ export default class App extends Component {
           />
         </RGBProvider>
         <hr/>
-        <HSLPicker
-          hue={hue}
-          saturation={saturation}
-          lightness={lightness}
-          handleChangeHue={this.handleChangeHue}
-          handleChangeSaturation={this.handleChangeSaturation}
-          handleChangeLightness={this.handleChangeLightness}
-        />
+        <HSLProvider
+          hue={{
+            value: hue,
+            handler: this.handleChangeHue,
+          }}
+          saturation={{
+            value: saturation,
+            handler: this.handleChangeSaturation,
+          }}
+          lightness={{
+            value: lightness,
+            handler: this.handleChangeLightness,
+          }}
+        >
+          <HSLPicker/>
+        </HSLProvider>
         <br/>
         <div style={style}></div>
       </React.Fragment>

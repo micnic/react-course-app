@@ -1,45 +1,33 @@
 import React, { Component } from 'react';
-import RangeInput from './RangeInput';
+import { hueContext, saturationContext, lightnessContext } from '../contextes';
+import HueRangeInput from './HueRangeInput';
+import SaturationRangeInput from './SaturationRangeInput';
+import LightnessRangeInput from './LightnessRangeInput';
 
 export default class HSLPicker extends Component {
 
 	render() {
 
-		const {
-			hue,
-			saturation,
-			lightness,
-			handleChangeHue,
-			handleChangeSaturation,
-			handleChangeLightness
-		} = this.props;
-
 		return (
 			<React.Fragment>
-				<RangeInput 
-					label="Hue" 
-					max={360} 
-					value={hue} 
-					handler={handleChangeHue}
-				/>
-				<RangeInput 
-					label="Saturation" 
-					max={100} 
-					value={saturation} 
-					handler={handleChangeSaturation}
-				/>
-				<RangeInput 
-					label="Lightness" 
-					max={100} 
-					value={lightness} 
-					handler={handleChangeLightness}
-				/>
+				<HueRangeInput/>
+				<SaturationRangeInput/>
+				<LightnessRangeInput/>
 				<br/>
+
 				<div>HSL(
-					{Math.round(hue)}, 
-					{saturation.toFixed(2)}%, 
-					{lightness.toFixed(2)}%)
-				</div>
+					<hueContext.Consumer>
+						{hue => Math.round(hue.value)}
+					</hueContext.Consumer>
+					,&nbsp;
+					<saturationContext.Consumer>
+						{saturation => `${saturation.value.toFixed(2)}%`} 
+					</saturationContext.Consumer>
+					,&nbsp;
+					<lightnessContext.Consumer>
+						{lightness => `${lightness.value.toFixed(2)}%`}
+					</lightnessContext.Consumer>
+				)</div>
 			</React.Fragment>
 		);
 	}
