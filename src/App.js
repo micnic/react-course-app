@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import RGBPicker from './components/RGBPicker';
 import HSLPicker from './components/HSLPicker';
 import { redContext, greenContext, blueContext } from './contextes';
+import RGBProvider from './components/RGBProvider';
 
 export default class App extends Component {
 
@@ -72,20 +73,26 @@ export default class App extends Component {
       <React.Fragment>
         <canvas ref={this.canvasRef} style={{ border: '1px solid black' }} onClick={this.handleClickPalette} width="256" height="256"></canvas>
         <br/>
-        <redContext.Provider value={{
-          value: red, 
-          handler: this.handleChangeRed
-        }}>
+        <RGBProvider 
+          red={{
+            value: red,
+            handler: this.handleChangeRed
+          }} 
+          green={{
+            value: green,
+            handler: this.handleChangeGreen
+          }} 
+          blue={{
+            value: blue,
+            handler: this.handleChangeBlue
+          }} 
+        >
           <RGBPicker
-            green={green}
-            blue={blue}
             rgb={rgb}
-            handleChangeGreen={this.handleChangeGreen}
-            handleChangeBlue={this.handleChangeBlue}
             handleChangeRGB={this.handleChangeRGB}
             handleBlurRGB={this.handleBlurRGB}
           />
-        </redContext.Provider>
+        </RGBProvider>
         <hr/>
         <HSLPicker
           hue={hue}

@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
-import { redContext } from '../contextes';
+import { greenContext } from '../contextes';
 import RangeInput from './RangeInput';
 
-export default class RedRangeInput extends Component {
+export default class GreenRangeInput extends Component {
   render() {
 
     return (
-      <redContext.Consumer>
+      <greenContext.Consumer>
 					{(color) => (
-						<RangeInput
-							label="Red" 
+						<RangeInput 
+							label="Green" 
 							max={255} 
 							value={color.value} 
 							handler={color.handler}
 						/>
 					)}
-				</redContext.Consumer>
+				</greenContext.Consumer>
     );
   } 
 }

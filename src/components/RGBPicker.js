@@ -1,33 +1,23 @@
 import React, { Component } from 'react';
-import RangeInput from './RangeInput';
-import { redContext, greenContext, blueContext } from './../contextes';
+import RedRangeInput from './RedRangeInput';
+import GreenRangeInput from './GreenRangeInput';
+import BlueRangeInput from './BlueRangeInput';
 
 export default class RGBPicker extends Component {
 
 	render() {
 
 		const {
-			green, blue, rgb,
-			handleChangeGreen,
-			handleChangeBlue,
+			rgb,
 			handleChangeRGB,
 			handleBlurRGB
 		} = this.props;
 
 		return (
 			<React.Fragment>
-				<redContext.Consumer>
-					{(color) => (
-						<RangeInput 
-							label="Red" 
-							max={255} 
-							value={color.value} 
-							handler={color.handler}
-						/>
-					)}
-				</redContext.Consumer>
-				<RangeInput label="Green" max={255} value={green} handler={handleChangeGreen}/>
-				<RangeInput label="Blue" max={255} value={blue} handler={handleChangeBlue}/>
+				<RedRangeInput/>
+				<GreenRangeInput/>
+				<BlueRangeInput/>
 				<br/>RGB:<br/>
 				<input type="text" value={rgb} onChange={handleChangeRGB} onBlur={handleBlurRGB}/>
 			</React.Fragment>
