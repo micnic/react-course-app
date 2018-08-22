@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import RGBPicker from './RGBPicker';
-import HSLPicker from './HSLPicker';
+import RGBPicker from './components/RGBPicker';
+import HSLPicker from './components/HSLPicker';
+import { redContext, greenContext, blueContext } from './contextes';
 
 export default class App extends Component {
 
@@ -71,17 +72,20 @@ export default class App extends Component {
       <React.Fragment>
         <canvas ref={this.canvasRef} style={{ border: '1px solid black' }} onClick={this.handleClickPalette} width="256" height="256"></canvas>
         <br/>
-        <RGBPicker
-          red={red}
-          green={green}
-          blue={blue}
-          rgb={rgb}
-          handleChangeRed={this.handleChangeRed}
-          handleChangeGreen={this.handleChangeGreen}
-          handleChangeBlue={this.handleChangeBlue}
-          handleChangeRGB={this.handleChangeRGB}
-          handleBlurRGB={this.handleBlurRGB}
-        />
+        <redContext.Provider value={{
+          value: red, 
+          handler: this.handleChangeRed
+        }}>
+          <RGBPicker
+            green={green}
+            blue={blue}
+            rgb={rgb}
+            handleChangeGreen={this.handleChangeGreen}
+            handleChangeBlue={this.handleChangeBlue}
+            handleChangeRGB={this.handleChangeRGB}
+            handleBlurRGB={this.handleBlurRGB}
+          />
+        </redContext.Provider>
         <hr/>
         <HSLPicker
           hue={hue}
@@ -275,7 +279,9 @@ export default class App extends Component {
 
   static toHSL(red, green, blue) {
 
-    red /= 255, green /= 255, blue /= 255;
+    red /= 255;
+    green /= 255; 
+    blue /= 255;
 
     const max = Math.max(red, green, blue)
     const min = Math.min(red, green, blue);
@@ -292,6 +298,7 @@ export default class App extends Component {
         case red: hue = (green - blue) / d + (green < blue ? 6 : 0); break;
         case green: hue = (blue - red) / d + 2; break;
         case blue: hue = (red - green) / d + 4; break;
+        default: break;
       }
 
       hue /= 6;
