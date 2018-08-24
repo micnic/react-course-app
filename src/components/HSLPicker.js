@@ -3,6 +3,7 @@ import { hueContext, saturationContext, lightnessContext } from '../contextes';
 import HueRangeInput from './HueRangeInput';
 import SaturationRangeInput from './SaturationRangeInput';
 import LightnessRangeInput from './LightnessRangeInput';
+import { Link } from 'react-router-dom';
 
 export default class HSLPicker extends Component {
 
@@ -10,6 +11,7 @@ export default class HSLPicker extends Component {
 
 		return (
 			<React.Fragment>
+				<Link to="/rgb">Go to RGB</Link>
 				<HueRangeInput/>
 				<SaturationRangeInput/>
 				<LightnessRangeInput/>
@@ -21,7 +23,7 @@ export default class HSLPicker extends Component {
 					</hueContext.Consumer>
 					,&nbsp;
 					<saturationContext.Consumer>
-						{saturation => `${saturation.value.toFixed(2)}%`} 
+						{saturation => `${saturation.value.toFixed(2)}%`}
 					</saturationContext.Consumer>
 					,&nbsp;
 					<lightnessContext.Consumer>

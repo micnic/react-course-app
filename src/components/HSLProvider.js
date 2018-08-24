@@ -15,7 +15,7 @@ export default class HSLProvider extends Component {
               { children }
             </lightnessContext.Provider>
           </saturationContext.Provider>
-        </hueContext.Provider>      
+        </hueContext.Provider>
     );
   }
 }

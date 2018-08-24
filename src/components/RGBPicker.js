@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import RedRangeInput from './RedRangeInput';
 import GreenRangeInput from './GreenRangeInput';
 import BlueRangeInput from './BlueRangeInput';
+import { Link } from 'react-router-dom';
 
 export default class RGBPicker extends Component {
 
@@ -15,6 +16,7 @@ export default class RGBPicker extends Component {
 
 		return (
 			<React.Fragment>
+				<Link to="/hsl">Go to HSL</Link>
 				<RedRangeInput/>
 				<GreenRangeInput/>
 				<BlueRangeInput/>

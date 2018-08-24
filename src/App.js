@@ -4,6 +4,8 @@ import RGBPicker from './components/RGBPicker';
 import HSLPicker from './components/HSLPicker';
 import RGBProvider from './components/RGBProvider';
 import HSLProvider from './components/HSLProvider';
+import { Route, Redirect } from 'react-router'
+import { HashRouter } from 'react-router-dom';
 
 export default class App extends Component {
 
@@ -57,10 +59,7 @@ export default class App extends Component {
 
   render() {
 
-    const {
-      red, green, blue, rgb,
-      hue, saturation, lightness
-    } = this.state;
+    const { rgb } = this.state;
 
     const style = {
       border: '1px solid black',
@@ -70,49 +69,73 @@ export default class App extends Component {
     };
 
     return (
-      <React.Fragment>
-        <canvas ref={this.canvasRef} style={{ border: '1px solid black' }} onClick={this.handleClickPalette} width="256" height="256"></canvas>
-        <br/>
-        <RGBProvider 
-          red={{
-            value: red,
-            handler: this.handleChangeRed
-          }} 
-          green={{
-            value: green,
-            handler: this.handleChangeGreen
-          }} 
-          blue={{
-            value: blue,
-            handler: this.handleChangeBlue
-          }} 
-        >
-          <RGBPicker
-            rgb={rgb}
-            handleChangeRGB={this.handleChangeRGB}
-            handleBlurRGB={this.handleBlurRGB}
-          />
-        </RGBProvider>
-        <hr/>
-        <HSLProvider
-          hue={{
-            value: hue,
-            handler: this.handleChangeHue,
-          }}
-          saturation={{
-            value: saturation,
-            handler: this.handleChangeSaturation,
-          }}
-          lightness={{
-            value: lightness,
-            handler: this.handleChangeLightness,
-          }}
-        >
-          <HSLPicker/>
-        </HSLProvider>
-        <br/>
-        <div style={style}></div>
-      </React.Fragment>
+      <HashRouter>
+        <React.Fragment>
+          <canvas ref={this.canvasRef} style={{ border: '1px solid black' }} onClick={this.handleClickPalette} width="256" height="256"></canvas>
+          <br/>
+
+          <Route exact path="/" component={() => {
+            return <Redirect to="/rgb"/>
+          }}/>
+          <Route exact path="/rgb" component={this.getRGBPicker}/>
+          <Route exact path="/hsl" component={this.getHSLPicker}/>
+
+          <br/>
+          <div style={style}></div>
+        </React.Fragment>
+      </HashRouter>
+    );
+  }
+
+  getRGBPicker = () => {
+
+    const { red, green, blue, rgb } = this.state;
+
+    return (
+      <RGBProvider
+        red={{
+          value: red,
+          handler: this.handleChangeRed
+        }}
+        green={{
+          value: green,
+          handler: this.handleChangeGreen
+        }}
+        blue={{
+          value: blue,
+          handler: this.handleChangeBlue
+        }}
+      >
+        <RGBPicker
+          rgb={rgb}
+          handleChangeRGB={this.handleChangeRGB}
+          handleBlurRGB={this.handleBlurRGB}
+        />
+      </RGBProvider>
+    );
+  }
+
+  getHSLPicker = () => {
+
+    const { hue, saturation, lightness } = this.state;
+
+    return (
+      <HSLProvider
+        hue={{
+          value: hue,
+          handler: this.handleChangeHue,
+        }}
+        saturation={{
+          value: saturation,
+          handler: this.handleChangeSaturation,
+        }}
+        lightness={{
+          value: lightness,
+          handler: this.handleChangeLightness,
+        }}
+      >
+        <HSLPicker/>
+      </HSLProvider>
     );
   }
 
@@ -295,7 +318,7 @@ export default class App extends Component {
   static toHSL(red, green, blue) {
 
     red /= 255;
-    green /= 255; 
+    green /= 255;
     blue /= 255;
 
     const max = Math.max(red, green, blue)
