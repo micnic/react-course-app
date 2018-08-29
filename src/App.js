@@ -6,6 +6,7 @@ import RGBProvider from './components/RGBProvider';
 import HSLProvider from './components/HSLProvider';
 import { Route, Redirect } from 'react-router'
 import { HashRouter } from 'react-router-dom';
+import ErrorBoundary from './components/ErrorBoundary';
 
 export default class App extends Component {
 
@@ -16,6 +17,7 @@ export default class App extends Component {
     this.canvasRef = React.createRef();
 
     this.state = {
+      error: null,
       red: 0,
       green: 0,
       blue: 0,
@@ -77,8 +79,10 @@ export default class App extends Component {
           <Route exact path="/" component={() => {
             return <Redirect to="/rgb"/>
           }}/>
-          <Route exact path="/rgb" component={this.getRGBPicker}/>
-          <Route exact path="/hsl" component={this.getHSLPicker}/>
+          <ErrorBoundary>
+            <Route exact path="/rgb" component={this.getRGBPicker}/>
+            <Route exact path="/hsl" component={this.getHSLPicker}/>
+          </ErrorBoundary>
 
           <br/>
           <div style={style}></div>

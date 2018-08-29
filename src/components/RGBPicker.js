@@ -14,6 +14,10 @@ export default class RGBPicker extends Component {
 			handleBlurRGB
 		} = this.props;
 
+		if (rgb === '#ffffff') {
+			throw new Error('I dont know what happened');
+		}
+
 		return (
 			<React.Fragment>
 				<Link to="/hsl">Go to HSL</Link>
