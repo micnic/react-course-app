@@ -10,23 +10,18 @@ import ErrorBoundary from './components/ErrorBoundary';
 
 export default class App extends Component {
 
-  constructor(props) {
+  canvasRef = React.createRef();
 
-    super(props);
-
-    this.canvasRef = React.createRef();
-
-    this.state = {
-      error: null,
-      red: 0,
-      green: 0,
-      blue: 0,
-      hue: 0,
-      saturation: 0,
-      lightness: 0,
-      rgb: '#000000'
-    };
-  }
+  state = {
+    error: null,
+    red: 0,
+    green: 0,
+    blue: 0,
+    hue: 0,
+    saturation: 0,
+    lightness: 0,
+    rgb: '#000000'
+  };
 
   componentDidMount() {
 
@@ -73,12 +68,10 @@ export default class App extends Component {
     return (
       <HashRouter>
         <React.Fragment>
-          <canvas ref={this.canvasRef} style={{ border: '1px solid black' }} onClick={this.handleClickPalette} width="256" height="256"></canvas>
+          <canvas ref={this.canvasRef} onMouseMove={this.handleClickPalette} width="256" height="256"></canvas>
           <br/>
 
-          <Route exact path="/" component={() => {
-            return <Redirect to="/rgb"/>
-          }}/>
+          <Route exact path="/" component={this.redirectToRGB}/>
           <ErrorBoundary>
             <Route exact path="/rgb" component={this.getRGBPicker}/>
             <Route exact path="/hsl" component={this.getHSLPicker}/>
@@ -89,6 +82,10 @@ export default class App extends Component {
         </React.Fragment>
       </HashRouter>
     );
+  }
+
+  redirectToRGB = () => {
+    return <Redirect to="/rgb"/>
   }
 
   getRGBPicker = () => {
